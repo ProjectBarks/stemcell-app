@@ -2,9 +2,8 @@ package org.dasd.stemcell;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -30,19 +29,31 @@ import java.util.logging.Logger;
  */
 public class STEMCell extends Application {
 
+	private static Stage stage;
+
 	public static void main(String[] args) {
 		Application.launch(STEMCell.class, args);
 	}
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public static void setScene(String session) {
 		try {
-			BorderPane pane = FXMLLoader.load(STEMCell.class.getResource("/fxml/home.fxml"));
-			Scene scene = new Scene(pane);
-			primaryStage.initStyle(StageStyle.UNDECORATED);
-			primaryStage.setScene(scene);
-			primaryStage.setTitle("STEMCell");
-			primaryStage.show();
+			Pane pane = FXMLLoader.load(STEMCell.class.getResource("/fxml/" + session + ".fxml"));
+			stage.setScene(new Scene(pane));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void start(Stage stage) throws Exception {
+		try {
+			STEMCell.stage = stage;
+			setScene("login");
+			stage.initStyle(StageStyle.UNDECORATED);
+			stage.setWidth(525);
+			stage.setHeight(325);
+			stage.setTitle("STEMCell");
+			stage.show();
 		} catch (Exception ex) {
 			Logger.getLogger(STEMCell.class.getName()).log(Level.SEVERE, null, ex);
 		}

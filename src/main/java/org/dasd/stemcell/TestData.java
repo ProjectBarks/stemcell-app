@@ -6,8 +6,6 @@ import org.dasd.stemcell.schedule.Period;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This program is free software: you can redistribute it and/or modify
@@ -51,11 +49,11 @@ public class TestData {
 				new Period("Mathematics", 6, LocalTime.of(9, 20), LocalTime.of(10, 49)),
 				new Period("Business", 7, LocalTime.of(10, 54), LocalTime.of(12, 23))
 		};
-		week = new Day[]{new Day(LocalDate.of(2016, 11, 14), LetterDay.C, fiveToSeven),
-			new Day(LocalDate.of(2016, 11, 15), LetterDay.D, oneToSeven),
-			new Day(LocalDate.of(2016, 11, 16), LetterDay.E, oneToSeven),
-			new Day(LocalDate.of(2016, 11, 17), LetterDay.F, oneToFour),
-			new Day(LocalDate.of(2016, 11, 18), LetterDay.G, fiveToSeven)};
+		week = new Day[]{new Day(LocalDate.of(2016, 11, 17), LetterDay.C, fiveToSeven),
+			new Day(LocalDate.of(2016, 11, 18), LetterDay.D, oneToSeven),
+			new Day(LocalDate.of(2016, 11, 19), LetterDay.E, oneToSeven),
+			new Day(LocalDate.of(2016, 11, 20), LetterDay.F, oneToFour),
+			new Day(LocalDate.of(2016, 11, 21), LetterDay.G, fiveToSeven)};
 	}
 
 }

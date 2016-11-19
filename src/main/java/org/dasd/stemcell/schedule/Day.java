@@ -1,5 +1,6 @@
 package org.dasd.stemcell.schedule;
 
+import com.calendarfx.model.Calendar;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -45,10 +46,21 @@ public class Day implements Comparable<Day> {
 	}
 
 	public Optional<Period> getCurrentPeriod() {
-		return periods.stream().filter(Period::isCurrentPeriod).findAny();
+		return periods.stream().filter(Period::isCurrentPeriod).findFirst();
 	}
 
 	public int compareTo(Day o) {
 		return date.compareTo(o.date);
+	}
+
+
+	public Calendar transfer(Calendar calendar) {
+		calendar.setName(letterDay.getTitle() + " (" + letterDay.getType().getTitle() + ")");
+		getPeriods().stream().map(x -> x.toEvent(this)).forEach(calendar::addEntry);
+		return calendar;
+	}
+
+	public LetterDayType getLetterDayType() {
+		return letterDay.getType();
 	}
 }
