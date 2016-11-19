@@ -11,6 +11,57 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="310.0"
 			prefWidth="513.0" scaleShape="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
 			stylesheets="@../stylesheets/home.css" fx:controller="org.dasd.stemcell.Home">
+	<center>
+		<GridPane style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+			<columnConstraints>
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+				<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.0" minWidth="1.0" prefWidth="1.0"/>
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+			</rowConstraints>
+			<children>
+				<DayView fx:id="dailySchedule" earlyLateHoursStrategy="HIDE" GridPane.columnIndex="2"/>
+				<BorderPane prefHeight="200.0" prefWidth="200.0">
+					<center>
+						<GridPane fx:id="weeklySchedule" BorderPane.alignment="CENTER">
+							<padding>
+								<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+							</padding>
+						</GridPane>
+					</center>
+					<top>
+						<JFXToolbar minHeight="30.0" style="-fx-background-color: #E0E0E0;"
+									BorderPane.alignment="CENTER">
+							<right>
+								<JFXButton fx:id="nextWeek" text="&gt;" BorderPane.alignment="CENTER">
+									<font>
+										<Font name="System Bold" size="15.0"/>
+									</font>
+								</JFXButton>
+							</right>
+							<left>
+								<JFXButton fx:id="lastWeek" text="&lt;" BorderPane.alignment="CENTER">
+									<font>
+										<Font name="System Bold" size="15.0"/>
+									</font>
+								</JFXButton>
+							</left>
+							<center>
+								<Label text="September 7-11" BorderPane.alignment="CENTER">
+									<font>
+										<Font name="System Bold" size="14.0"/>
+									</font>
+								</Label>
+							</center>
+						</JFXToolbar>
+					</top>
+				</BorderPane>
+				<Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1"/>
+			</children>
+		</GridPane>
+	</center>
 	<top>
 		<JFXToolbar minHeight="45.0" style="-fx-background-color: #1565C0;" BorderPane.alignment="CENTER">
 			<center>
@@ -81,55 +132,4 @@
 			</center>
 		</JFXToolbar>
 	</top>
-	<center>
-		<GridPane style="-fx-background-color: white;" BorderPane.alignment="CENTER">
-			<columnConstraints>
-				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-				<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.0" minWidth="1.0" prefWidth="1.0"/>
-				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-			</columnConstraints>
-			<rowConstraints>
-				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-			</rowConstraints>
-			<children>
-				<DayView earlyLateHoursStrategy="HIDE" GridPane.columnIndex="2"/>
-				<BorderPane prefHeight="200.0" prefWidth="200.0">
-					<top>
-						<JFXToolbar minHeight="30.0" style="-fx-background-color: #E0E0E0;"
-									BorderPane.alignment="CENTER">
-							<right>
-								<JFXButton fx:id="nextWeek" text="&gt;" BorderPane.alignment="CENTER">
-									<font>
-										<Font name="System Bold" size="15.0"/>
-									</font>
-								</JFXButton>
-							</right>
-							<left>
-								<JFXButton fx:id="lastWeek" text="&lt;" BorderPane.alignment="CENTER">
-									<font>
-										<Font name="System Bold" size="15.0"/>
-									</font>
-								</JFXButton>
-							</left>
-							<center>
-								<Label text="September 7-11" BorderPane.alignment="CENTER">
-									<font>
-										<Font name="System Bold" size="14.0"/>
-									</font>
-								</Label>
-							</center>
-						</JFXToolbar>
-					</top>
-					<center>
-						<GridPane fx:id="weekView" BorderPane.alignment="CENTER">
-							<padding>
-								<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-							</padding>
-						</GridPane>
-					</center>
-				</BorderPane>
-				<Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1"/>
-			</children>
-		</GridPane>
-	</center>
 </BorderPane>

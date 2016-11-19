@@ -1,9 +1,11 @@
 package org.dasd.stemcell.schedule;
 
 import lombok.Getter;
+import com.calendarfx.model.Calendar;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This program is free software: you can redistribute it and/or modify
@@ -50,5 +52,16 @@ public class Day implements Comparable<Day> {
 
 	public int compareTo(Day o) {
 		return date.compareTo(o.date);
+	}
+
+
+	public Calendar transfer(Calendar calendar) {
+		calendar.setName(letterDay.getTitle() + " (" + letterDay.getType().getTitle() + ")");
+		calendar.addEntries(getPeriods().stream().map(Period::toEvent).collect(Collectors.toList()));
+		return calendar;
+	}
+
+	public LetterDayType getLetterDayType() {
+		return letterDay.getType();
 	}
 }

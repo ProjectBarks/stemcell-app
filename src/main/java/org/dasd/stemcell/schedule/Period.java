@@ -1,12 +1,12 @@
 package org.dasd.stemcell.schedule;
 
+import com.calendarfx.model.Entry;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -68,5 +68,14 @@ public class Period implements Comparable<Period> {
 
 	public boolean isCurrentPeriod(LocalTime time) {
 		return startTime.isAfter(time) && endTime.isBefore(time);
+	}
+
+
+	public Entry<Period> toEvent() {
+		Entry<Period> entry = new Entry<>(name);
+		entry.setStartTime(startTime);
+		entry.setEndTime(endTime);
+		entry.setUserObject(this);
+		return entry;
 	}
 }
