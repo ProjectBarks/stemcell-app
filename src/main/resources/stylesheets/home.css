@@ -1,0 +1,28 @@
+.current-time-line {
+    -fx-stroke: #1565C0;
+    -fx-fill: #1565C0;
+}
+
+.current-time-circle {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
+}
+
+.icons-rippler {
+    -fx-rippler-fill: BLUE;
+    -fx-mask-type: CIRCLE;
+}
+
+.icons-rippler:hover{
+    -fx-cursor: hand;
+}
+
+.separator:horizontal .line {
+    -fx-border-color: #D9D9D9;
+    -fx-border-width: 1 0 0 0 ;
+}
+
+.separator:vertical .line {
+    -fx-border-color: #D9D9D9;
+    -fx-border-width: 0 0 0 1;
+}

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import com.calendarfx.view.DayView?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="310.0"
+			prefWidth="513.0" scaleShape="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+			stylesheets="@../stylesheets/home.css" fx:controller="org.dasd.stemcell.Home">
+	<top>
+		<JFXToolbar minHeight="45.0" style="-fx-background-color: #1565C0;" BorderPane.alignment="CENTER">
+			<center>
+				<GridPane BorderPane.alignment="CENTER">
+					<columnConstraints>
+						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+						<ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="40.0" prefWidth="40.0"/>
+					</columnConstraints>
+					<rowConstraints>
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+					</rowConstraints>
+					<padding>
+						<Insets left="40.0"/>
+					</padding>
+					<children>
+						<HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+							<children>
+								<Label text="Class Period: " textFill="WHITE">
+									<font>
+										<Font name="System Bold" size="18.0"/>
+									</font>
+								</Label>
+								<Label fx:id="classPeriod" text="3" textFill="WHITE">
+									<font>
+										<Font size="18.0"/>
+									</font>
+								</Label>
+							</children>
+						</HBox>
+						<HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+							<children>
+								<Label text="Letter Day: " textFill="WHITE">
+									<font>
+										<Font name="System Bold" size="18.0"/>
+									</font>
+								</Label>
+								<Label fx:id="letterDay" text="A" textFill="WHITE">
+									<font>
+										<Font size="18.0"/>
+									</font>
+								</Label>
+							</children>
+						</HBox>
+						<HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
+							<children>
+								<Label text="Schedule: " textFill="WHITE">
+									<font>
+										<Font name="System Font Bold" size="18.0"/>
+									</font>
+								</Label>
+								<Label fx:id="scheduleType" text="1-7" textFill="WHITE">
+									<font>
+										<Font size="18.0"/>
+									</font>
+								</Label>
+							</children>
+						</HBox>
+						<JFXRippler maskType="CIRCLE" ripplerFill="#4d4d4d" styleClass="icons-rippler"
+									GridPane.columnIndex="3">
+							<control>
+								<FontIcon fx:id="settings" iconColor="WHITE" iconLiteral="fa-gear" iconSize="18"/>
+							</control>
+						</JFXRippler>
+					</children>
+				</GridPane>
+			</center>
+		</JFXToolbar>
+	</top>
+	<center>
+		<GridPane style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+			<columnConstraints>
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+				<ColumnConstraints hgrow="SOMETIMES" maxWidth="1.0" minWidth="1.0" prefWidth="1.0"/>
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+			</rowConstraints>
+			<children>
+				<DayView earlyLateHoursStrategy="HIDE" GridPane.columnIndex="2"/>
+				<BorderPane prefHeight="200.0" prefWidth="200.0">
+					<top>
+						<JFXToolbar minHeight="30.0" style="-fx-background-color: #E0E0E0;"
+									BorderPane.alignment="CENTER">
+							<right>
+								<JFXButton fx:id="nextWeek" text="&gt;" BorderPane.alignment="CENTER">
+									<font>
+										<Font name="System Bold" size="15.0"/>
+									</font>
+								</JFXButton>
+							</right>
+							<left>
+								<JFXButton fx:id="lastWeek" text="&lt;" BorderPane.alignment="CENTER">
+									<font>
+										<Font name="System Bold" size="15.0"/>
+									</font>
+								</JFXButton>
+							</left>
+							<center>
+								<Label text="September 7-11" BorderPane.alignment="CENTER">
+									<font>
+										<Font name="System Bold" size="14.0"/>
+									</font>
+								</Label>
+							</center>
+						</JFXToolbar>
+					</top>
+					<center>
+						<GridPane fx:id="weekView" BorderPane.alignment="CENTER">
+							<padding>
+								<Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+							</padding>
+						</GridPane>
+					</center>
+				</BorderPane>
+				<Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1"/>
+			</children>
+		</GridPane>
+	</center>
+</BorderPane>
