@@ -87,4 +87,13 @@ public class Period implements Comparable<Period> {
 		entry.setUserObject(this);
 		return entry;
 	}
+
+
+	public Entry<Period> toEvent() {
+		Entry<Period> entry = new Entry<>(name);
+		entry.setStartTime(startTime);
+		entry.setEndTime(endTime);
+		entry.setUserObject(this);
+		return entry;
+	}
 }
