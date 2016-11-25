@@ -1,6 +1,5 @@
 package org.dasd.stemcell.service;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.dasd.stemcell.STEMCell;
@@ -61,7 +60,14 @@ public class ServiceManager {
 	}
 
 	public List<Day> getWeek() {
-		LocalDate monday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+		LocalDate today = LocalDate.now();
+		LocalDate monday;
+		if (today.getDayOfWeek() == DayOfWeek.SUNDAY || today.getDayOfWeek() == DayOfWeek.SATURDAY) {
+			monday = today.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+		} else {
+			monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+		}
+
 		LocalDate friday = LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
 		return days.stream()
 				.filter(x -> (x.getDate().isAfter(monday) || x.getDate().isEqual(monday)) && (x.getDate().isBefore(friday) || x.getDate().isEqual(friday)))

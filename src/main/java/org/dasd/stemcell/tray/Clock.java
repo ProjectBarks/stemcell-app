@@ -17,7 +17,6 @@ import java.lang.reflect.Method;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class Clock implements TimedService {
 
@@ -39,7 +38,7 @@ public class Clock implements TimedService {
 				Optional<Point2D> testPoint = getMacTrayPosition();
 				Point2D point = null;
 				if (testPoint.isPresent()) point = testPoint.get();
-				stage.setX(point.getX());
+				stage.setX(point.getX() + (icon.getImage().getWidth(null) / 2) - (stage.getWidth() / 2));
 				stage.setY(point.getY());
 				Platform.runLater(() -> {
 					if (stage.isShowing()) stage.hide();
@@ -62,15 +61,14 @@ public class Clock implements TimedService {
 	public void onMinuteChanged(ServiceManager manager) {
 		Optional<Day> today = manager.getToday();
 		Optional<Period> currentPeriod;
-		System.out.println(manager);
 		if (today.isPresent() && (currentPeriod = today.get().getCurrentPeriod()).isPresent()) {
 			long remainingTime = Math.abs(ChronoUnit.MINUTES.between(LocalTime.now(), currentPeriod.get().getEndTime()));
 			Image icon = renderer.drawIcon(String.valueOf(remainingTime));
 			this.icon.setImage(icon);
-		} else this.icon.setImage(this.renderer.drawIcon("STEM"));
+		} else this.icon.setImage(this.renderer.drawIcon(this.defaultMessage));
 	}
 
-	private static int updatePosition(int point, int boundsPoint, int boundsSize, int preferredSize) {
+	/*private static int updatePosition(int point, int boundsPoint, int boundsSize, int preferredSize) {
 		point = point < boundsPoint ? boundsPoint : point;
 		point = point > boundsPoint + boundsSize ? boundsPoint + boundsSize : point;
 		point = point + preferredSize > boundsPoint + boundsSize ? (point + preferredSize) - (boundsPoint + boundsSize) : point;
@@ -102,7 +100,7 @@ public class Clock implements TimedService {
 				.findFirst();
 
 		return devices.isPresent() ? devices : Optional.of(ge.getDefaultScreenDevice());
-	}
+	}*/
 
 	private Optional<Point2D> getMacTrayPosition() {
 		try {

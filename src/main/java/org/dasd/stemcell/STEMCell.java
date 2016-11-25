@@ -1,11 +1,16 @@
 package org.dasd.stemcell;
 
 import com.sun.javafx.application.PlatformImpl;
-import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Group;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.dasd.stemcell.service.ServiceManager;
@@ -15,7 +20,6 @@ import org.dasd.stemcell.tray.OutlineRenderer;
 import org.dasd.stemcell.view.ScreensController;
 
 import java.awt.*;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
@@ -53,30 +57,6 @@ public class STEMCell extends Application {
 		Application.launch(STEMCell.class, args);
 	}
 
-	@Override
-	public void start(Stage stage) {
-		ScreensController controller = new ScreensController();
-		controller.loadScreen(HOME_SCREEN);
-		controller.loadScreen(LOGIN_SCREEN);
-
-		ServiceManager serviceManager = new ServiceManager();
-		serviceManager.setDays(new TreeSet<>(TestData.days));
-		Set<TimedService> services = serviceManager.getServices();
-		services.add(controller.getController(HOME_SCREEN));
-		services.add(new Clock(stage, new OutlineRenderer(new Font("Helvetica", Font.PLAIN, 15))));
-
-		Group root = new Group();
-		root.getChildren().addAll(controller);
-		stage.setScene(new Scene(root));
-		stage.initStyle(StageStyle.UNDECORATED);
-		stage.setAlwaysOnTop(true);
-		stage.setWidth(WIDTH);
-		stage.setHeight(HEIGHT);
-
-		controller.setScreen(LOGIN_SCREEN);
-		serviceManager.start();
-	}
-
 	public static void run(Runnable runnable) {
 		service.submit(() -> {
 			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
@@ -97,5 +77,54 @@ public class STEMCell extends Application {
 			}
 			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 		});
+	}
+
+	@Override
+	public void start(Stage stage) {
+		ScreensController controller = new ScreensController(WIDTH, HEIGHT);
+		controller.loadScreen(HOME_SCREEN);
+		controller.loadScreen(LOGIN_SCREEN);
+
+		ServiceManager serviceManager = new ServiceManager();
+		serviceManager.setDays(new TreeSet<>(TestData.days));
+		Set<TimedService> services = serviceManager.getServices();
+		services.add(controller.getController(HOME_SCREEN));
+		services.add(new Clock(stage, new OutlineRenderer(new Font("Helvetica", Font.PLAIN, 15))));
+
+		BorderPane wrapper = new BorderPane();
+		double triangleSize = 15;
+		Polygon polygon = generateTriangle(triangleSize, triangleSize, false);
+		BorderPane.setAlignment(polygon, Pos.CENTER);
+		polygon.setFill(Color.valueOf("#1565C0"));
+		wrapper.setCenter(controller);
+		wrapper.setTop(polygon);
+		wrapper.setBackground(null);
+
+
+		controller.setEffect(new DropShadow(5, Color.BLACK));
+		controller.setPadding(new Insets(-10, 0, 0, 0));
+
+		Scene scene = new Scene(wrapper);
+		scene.setFill(null);
+		stage.setScene(scene);
+		stage.initStyle(StageStyle.UNDECORATED);
+		stage.initStyle(StageStyle.TRANSPARENT);
+		stage.setWidth(WIDTH + 10);
+		stage.setHeight(HEIGHT + triangleSize + 10);
+		stage.setAlwaysOnTop(true);
+
+		controller.setScreen(LOGIN_SCREEN);
+		serviceManager.start();
+	}
+
+	private Polygon generateTriangle(double width, double height, boolean flipped) {
+		Polygon polygon = new Polygon();
+		ObservableList<Double> points = polygon.getPoints();
+		for (double x = -width; x <= width; x++) {
+			points.add(x + width);
+			double y = ((height / 2) * (Math.cos(x * (Math.PI / width)) + 1));
+			points.add(flipped ? y : height - y);
+		}
+		return polygon;
 	}
 }

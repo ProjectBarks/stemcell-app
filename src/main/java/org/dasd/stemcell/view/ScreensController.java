@@ -7,7 +7,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Window;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +18,20 @@ public class ScreensController extends StackPane {
 
 	private HashMap<String, Container> screens;
 
-	public ScreensController() {
+	public ScreensController(int width, int height) {
+		super();
+		this.setPrefWidth(width);
+		this.setPrefHeight(height);
+		this.setBackground(null);
 		screens = new HashMap<>();
+
+
+	}
+
+	private static Timeline getTimeline(int duration, DoubleProperty opacity) {
+		KeyFrame startingFrame = new KeyFrame(Duration.ZERO, new KeyValue(opacity, 0.0));
+		KeyFrame endingFrame = new KeyFrame(new Duration(duration), new KeyValue(opacity, 1.0));
+		return new Timeline(startingFrame, endingFrame);
 	}
 
 	public boolean setScreen(final String name) {
@@ -80,17 +92,14 @@ public class ScreensController extends StackPane {
 	}
 
 	private Pane initScreen(String name) {
-		Pane pane = screens.get(name).getPane();
-		Window window = getScene().getWindow();
-		pane.setPrefWidth(window.getWidth());
-		pane.setPrefHeight(window.getHeight());
+		Pane pane = getScreen(name);
+		Rectangle rectangle = new Rectangle(this.getPrefWidth(), this.getPrefHeight());
+		rectangle.setArcHeight(15);
+		rectangle.setArcWidth(15);
+		pane.setClip(rectangle);
+		pane.setPrefWidth(this.getPrefWidth());
+		pane.setPrefHeight(this.getPrefHeight());
 		return pane;
-	}
-
-	private static Timeline getTimeline(int duration, DoubleProperty opacity) {
-		KeyFrame startingFrame = new KeyFrame(Duration.ZERO, new KeyValue(opacity, 0.0));
-		KeyFrame endingFrame = new KeyFrame(new Duration(duration), new KeyValue(opacity, 1.0));
-		return new Timeline(startingFrame, endingFrame);
 	}
 
 	@AllArgsConstructor
