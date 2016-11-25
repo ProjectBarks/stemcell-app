@@ -1,4 +1,4 @@
-package org.dasd.stemcell.controllers;
+package org.dasd.stemcell.view.controllers;
 
 /**
  * This program is free software: you can redistribute it and/or modify
@@ -21,8 +21,7 @@ import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.view.DayView;
 import com.jfoenix.controls.JFXButton;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,21 +36,22 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.util.Duration;
-import org.dasd.stemcell.TestData;
+import org.dasd.stemcell.view.ControlledScreen;
+import org.dasd.stemcell.view.ScreensController;
 import org.dasd.stemcell.schedule.Day;
 import org.dasd.stemcell.schedule.Period;
+import org.dasd.stemcell.service.ServiceManager;
+import org.dasd.stemcell.service.TimedService;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Home implements Initializable {
+public class Home implements Initializable, ControlledScreen, TimedService {
 
 	private final static double CIRCLE_SIZE = 5, LARGE_CIRCLE_SIZE = 6;
 	private static LocalTime START_TIME = LocalTime.of(7, 35), END_TIME = LocalTime.of(14, 35);
@@ -84,49 +84,41 @@ public class Home implements Initializable {
 	@FXML
 	private Label classPeriod;
 
-	private List<Day> week;
-	private LocalDate lastDate;
-	private LocalTime lastTime;
 	private Calendar calendar;
 
-
+	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		week = Arrays.asList(TestData.week);
-		Collections.sort(week);
-
 		CalendarSource source = new CalendarSource();
 		calendar = new Calendar();
 		calendar.setReadOnly(true);
 		calendar.setStyle(Calendar.Style.STYLE2);
 		source.getCalendars().add(calendar);
 		dailySchedule.getCalendarSources().add(source);
-
-		render();
-
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-			LocalDateTime now = LocalDateTime.now();
-			if (now.getDayOfYear() != lastDate.getDayOfYear()) {
-				render();
-			} else if (now.getHour() != lastTime.getHour() || now.getMinute() != lastTime.getMinute()) {
-				Optional<Day> today = getToday();
-				updateDailyLine();
-				renderTopBar(today);
-				highlightPeriod(today, week, getAllPeriods());
-				lastTime = LocalTime.now();
-			}
-		}));
-
-		timeline.setCycleCount(Timeline.INDEFINITE);
-		timeline.play();
 	}
 
-	private void render() {
-		Optional<Day> today = getToday();
-		renderTopBar(today);
-		renderDay(today);
-		renderWeek(today, week);
-		lastDate = LocalDate.now();
-		lastTime = LocalTime.now();
+	@Override
+	public void onDayChanged(ServiceManager manager) {
+		Platform.runLater(() -> {
+			Optional<Day> today = manager.getToday();
+			renderTopBar(today);
+			renderDay(today);
+			renderWeek(today, manager.getWeek());
+		});
+	}
+
+	@Override
+	public void onMinuteChanged(ServiceManager manager) {
+		Platform.runLater(() -> {
+			Optional<Day> today = manager.getToday();
+			List<Day> week = manager.getWeek();
+			updateDailyLine();
+			renderTopBar(today);
+			highlightPeriod(today, week, getAllPeriods(week));
+		});
+	}
+
+	@Override
+	public void setScreenParent(ScreensController screenPage) {
 	}
 
 	private void renderTopBar(Optional<Day> today) {
@@ -158,7 +150,7 @@ public class Home implements Initializable {
 	}
 
 	private void renderWeek(Optional<Day> today, List<Day> week) {
-		List<Period> periods = getAllPeriods();
+		List<Period> periods = getAllPeriods(week);
 		Collections.sort(week);
 
 		weeklySchedule.getChildren().clear();
@@ -299,11 +291,7 @@ public class Home implements Initializable {
 		}
 	}
 
-	private Optional<Day> getToday() {
-		return week.stream().filter(x -> x.getDate().equals(LocalDate.now())).findAny();
-	}
-
-	private List<Period> getAllPeriods() {
+	private List<Period> getAllPeriods(List<Day> week) {
 		return week
 				.stream()
 				.map(Day::getPeriods)

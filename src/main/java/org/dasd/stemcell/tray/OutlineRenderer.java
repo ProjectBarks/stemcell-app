@@ -1,8 +1,7 @@
-package org.dasd.stemcell.clock;
+package org.dasd.stemcell.tray;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.io.IOException;
 
 /**
  * This program is free software: you can redistribute it and/or modify
@@ -21,8 +20,8 @@ import java.io.IOException;
  * Written By: brandon on 1/14/15
  */
 public class OutlineRenderer extends BaseRenderer {
-	public OutlineRenderer() throws IOException, FontFormatException {
-		super();
+	public OutlineRenderer(Font font) {
+		super(font);
 	}
 
 	@Override

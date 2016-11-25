@@ -1,18 +1,26 @@
 package org.dasd.stemcell;
 
+import com.sun.javafx.application.PlatformImpl;
+import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import javafx.application.Platform;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.dasd.stemcell.service.ServiceManager;
+import org.dasd.stemcell.service.TimedService;
+import org.dasd.stemcell.tray.Clock;
+import org.dasd.stemcell.tray.OutlineRenderer;
+import org.dasd.stemcell.view.ScreensController;
 
-import java.io.IOException;
+import java.awt.*;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This program is free software: you can redistribute it and/or modify
@@ -32,33 +40,62 @@ import java.util.logging.Logger;
  */
 public class STEMCell extends Application {
 
-	private static Stage stage;
+
+	public final static String HOME_SCREEN = "home", LOGIN_SCREEN = "login";
+	public final static int WIDTH = 525, HEIGHT = 325;
+	private final static ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
 
 	public static void main(String[] args) {
+		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+		PlatformImpl.setTaskbarApplication(false);
+		Platform.setImplicitExit(false);
+
 		Application.launch(STEMCell.class, args);
 	}
 
-	public static void setScene(String session) {
-		try {
-			Pane pane = FXMLLoader.load(STEMCell.class.getResource("/fxml/" + session + ".fxml"));
-			stage.setScene(new Scene(pane));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void start(Stage stage) {
+		ScreensController controller = new ScreensController();
+		controller.loadScreen(HOME_SCREEN);
+		controller.loadScreen(LOGIN_SCREEN);
+
+		ServiceManager serviceManager = new ServiceManager();
+		serviceManager.setDays(new TreeSet<>(TestData.days));
+		Set<TimedService> services = serviceManager.getServices();
+		services.add(controller.getController(HOME_SCREEN));
+		services.add(new Clock(stage, new OutlineRenderer(new Font("Helvetica", Font.PLAIN, 15))));
+
+		Group root = new Group();
+		root.getChildren().addAll(controller);
+		stage.setScene(new Scene(root));
+		stage.initStyle(StageStyle.UNDECORATED);
+		stage.setAlwaysOnTop(true);
+		stage.setWidth(WIDTH);
+		stage.setHeight(HEIGHT);
+
+		controller.setScreen(LOGIN_SCREEN);
+		serviceManager.start();
 	}
 
-	@Override
-	public void start(Stage stage) throws Exception {
-		try {
-			STEMCell.stage = stage;
-			setScene("login");
-			stage.initStyle(StageStyle.UNDECORATED);
-			stage.setWidth(525);
-			stage.setHeight(325);
-			stage.setTitle("STEMCell");
-			stage.show();
-		} catch (Exception ex) {
-			Logger.getLogger(STEMCell.class.getName()).log(Level.SEVERE, null, ex);
-		}
+	public static void run(Runnable runnable) {
+		service.submit(() -> {
+			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+			runnable.run();
+		});
+	}
+
+	public static void run(final Runnable runnable, long interval, TimeUnit unit) {
+		service.submit(() -> {
+			while (!Thread.currentThread().isInterrupted()) {
+				try {
+					runnable.run();
+					Thread.sleep(unit.toMillis(interval));
+				} catch (Throwable ex) {
+					ex.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+			}
+			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+		});
 	}
 }

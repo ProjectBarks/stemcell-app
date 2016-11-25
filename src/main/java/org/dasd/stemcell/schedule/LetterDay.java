@@ -3,6 +3,9 @@ package org.dasd.stemcell.schedule;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -42,6 +45,11 @@ public enum LetterDay {
 
 	public String getTitle() {
 		return name().toUpperCase();
+	}
+
+	public LetterDay getNext() {
+		List<LetterDay> letterDays = Arrays.asList(values());
+		return letterDays.get((letterDays.indexOf(this) + 1) % letterDays.size());
 	}
 
 	public static boolean isLetterDay(String letter) {

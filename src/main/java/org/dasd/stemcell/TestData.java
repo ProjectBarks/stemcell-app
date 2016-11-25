@@ -4,8 +4,12 @@ import org.dasd.stemcell.schedule.Day;
 import org.dasd.stemcell.schedule.LetterDay;
 import org.dasd.stemcell.schedule.Period;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +29,7 @@ import java.time.LocalTime;
  */
 public class TestData {
 
-	public static final Day[] week;
+	public static final List<Day> days = new ArrayList<>();
 
 	static  {
 		Period[] oneToSeven = new Period[]{
@@ -49,11 +53,27 @@ public class TestData {
 				new Period("Mathematics", 6, LocalTime.of(9, 20), LocalTime.of(10, 49)),
 				new Period("Business", 7, LocalTime.of(10, 54), LocalTime.of(12, 23))
 		};
-		week = new Day[]{new Day(LocalDate.of(2016, 11, 17), LetterDay.C, fiveToSeven),
-			new Day(LocalDate.of(2016, 11, 18), LetterDay.D, oneToSeven),
-			new Day(LocalDate.of(2016, 11, 19), LetterDay.E, oneToSeven),
-			new Day(LocalDate.of(2016, 11, 20), LetterDay.F, oneToFour),
-			new Day(LocalDate.of(2016, 11, 21), LetterDay.G, fiveToSeven)};
+
+
+		LocalDate end = LocalDate.now().plusDays(30);
+		LetterDay letterDay = LetterDay.values()[new Random().nextInt(LetterDay.values().length)];
+		for (LocalDate x = LocalDate.now().minusDays(30); x.isBefore(end); x = x.plusDays(1)) {
+			if (x.getDayOfWeek() == DayOfWeek.SATURDAY || x.getDayOfWeek() == DayOfWeek.SUNDAY) {
+				continue;
+			}
+			switch (letterDay.getType()) {
+				case ONE_THROUGH_FOUR:
+					days.add(new Day(x, letterDay, oneToFour));
+					break;
+				case FIVE_THROUGH_SEVEN:
+					days.add(new Day(x, letterDay, fiveToSeven));
+					break;
+				case ALL:
+					days.add(new Day(x, letterDay, oneToSeven));
+					break;
+			}
+			letterDay = letterDay.getNext();
+		}
 	}
 
 }

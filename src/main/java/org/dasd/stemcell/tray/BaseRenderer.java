@@ -1,4 +1,4 @@
-package org.dasd.stemcell.clock;
+package org.dasd.stemcell.tray;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.lang.reflect.Field;
 
 /**
@@ -36,11 +35,6 @@ public abstract class BaseRenderer {
 	@Setter
 	private boolean debug;
 
-	public BaseRenderer() throws IOException, FontFormatException {
-		this(Font.createFont(Font.TRUETYPE_FONT, BaseRenderer.class.getResourceAsStream("/font.ttf")));
-		debug = false;
-	}
-
 	public BaseRenderer(Font font) {
 		this.customFont = font;
 	}
@@ -50,7 +44,7 @@ public abstract class BaseRenderer {
 	}
 
 	public Image drawIcon(String text, float percent) {
-		return drawIcon(text, Color.BLACK, true, percent);
+		return drawIcon(text, Color.WHITE, true, percent);
 	}
 
 	public Image drawIcon(String text, Color color, boolean animate, float percent) {
@@ -98,7 +92,7 @@ public abstract class BaseRenderer {
 		return area;
 	}
 
-	public Area generateCenteredText(Area parent, String s, Graphics g) {
+	protected Area generateCenteredText(Area parent, String s, Graphics g) {
 		FontMetrics fm = g.getFontMetrics();
 		float x = (float) ((parent.getBounds2D().getWidth() - fm.stringWidth(s)) / 2);
 		float y = (float) (fm.getAscent() + (parent.getBounds2D().getHeight() - (fm.getAscent() + fm.getDescent())) / 2);

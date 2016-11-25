@@ -1,9 +1,8 @@
-package org.dasd.stemcell.clock;
+package org.dasd.stemcell.tray;
 
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
-import java.io.IOException;
 
 /**
  * This program is free software: you can redistribute it and/or modify
@@ -26,8 +25,8 @@ public class TextRenderer extends BaseRenderer {
 	private Rectangle2D cachedBounds;
 	private Font cachedFont;
 
-	public TextRenderer() throws IOException, FontFormatException {
-		super();
+	public TextRenderer(Font font) {
+		super(font);
 		cachedBounds = null;
 		cachedFont = null;
 	}

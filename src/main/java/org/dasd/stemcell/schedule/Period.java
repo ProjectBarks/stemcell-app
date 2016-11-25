@@ -70,7 +70,6 @@ public class Period implements Comparable<Period> {
 		return time.isAfter(startTime) && time.isBefore(endTime);
 	}
 
-
 	public Entry<Period> toEvent() {
 		return toEvent(null);
 	}
@@ -84,15 +83,6 @@ public class Period implements Comparable<Period> {
 			entry.setEndDate(day.getDate());
 
 		}
-		entry.setUserObject(this);
-		return entry;
-	}
-
-
-	public Entry<Period> toEvent() {
-		Entry<Period> entry = new Entry<>(name);
-		entry.setStartTime(startTime);
-		entry.setEndTime(endTime);
 		entry.setUserObject(this);
 		return entry;
 	}

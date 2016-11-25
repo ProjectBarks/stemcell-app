@@ -1,11 +1,10 @@
-package org.dasd.stemcell.clock;
+package org.dasd.stemcell.tray;
 
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
-import java.io.IOException;
 
 /**
  * This program is free software: you can redistribute it and/or modify
@@ -24,8 +23,8 @@ import java.io.IOException;
  * Written By: brandon on 1/14/15
  */
 public class SolidRenderer extends BaseRenderer {
-	public SolidRenderer() throws IOException, FontFormatException {
-		super();
+	public SolidRenderer(Font font) {
+		super(font);
 	}
 
 	@Override

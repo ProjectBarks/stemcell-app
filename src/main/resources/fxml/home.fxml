@@ -11,7 +11,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
 			minWidth="-Infinity"
 			prefHeight="310.0" prefWidth="513.0" scaleShape="false" xmlns="http://javafx.com/javafx/8"
-			stylesheets="@../stylesheets/home.css" fx:controller="org.dasd.stemcell.controllers.Home">
+			stylesheets="@../stylesheets/home.css" fx:controller="org.dasd.stemcell.view.controllers.Home">
 	<center>
 		<GridPane style="-fx-background-color: white;" BorderPane.alignment="CENTER">
 			<columnConstraints>

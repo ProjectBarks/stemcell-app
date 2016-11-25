@@ -1,4 +1,4 @@
-package org.dasd.stemcell.controllers;
+package org.dasd.stemcell.view.controllers;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -7,6 +7,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import org.dasd.stemcell.STEMCell;
+import org.dasd.stemcell.view.ControlledScreen;
+import org.dasd.stemcell.view.ScreensController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -27,7 +29,7 @@ import java.util.ResourceBundle;
  * <p>
  * Written By: brandon on 11/21/16
  */
-public class Login implements Initializable {
+public class Login implements Initializable, ControlledScreen {
 
 	@FXML
 	private JFXPasswordField password;
@@ -35,12 +37,14 @@ public class Login implements Initializable {
 	@FXML
 	private JFXTextField username;
 
+	private ScreensController controller;
+
 	@FXML
 	void onLogin(ActionEvent event) {
 		if (!username.validate() && !password.validate()) {
 			return;
 		}
-		STEMCell.setScene("home");
+		controller.setScreen(STEMCell.HOME_SCREEN);
 	}
 
 	@Override
@@ -50,5 +54,10 @@ public class Login implements Initializable {
 		//validator.setIcon(new FontAwesomeIconView(FontAwesomeIcon.WARNING));
 		username.getValidators().add(validator);
 		password.getValidators().add(validator);
+	}
+
+	@Override
+	public void setScreenParent(ScreensController controller) {
+		this.controller = controller;
 	}
 }
