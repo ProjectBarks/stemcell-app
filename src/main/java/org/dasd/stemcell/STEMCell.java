@@ -3,14 +3,9 @@ package org.dasd.stemcell;
 import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.dasd.stemcell.service.ServiceManager;
@@ -18,7 +13,13 @@ import org.dasd.stemcell.service.TimedService;
 import org.dasd.stemcell.tray.Clock;
 import org.dasd.stemcell.tray.OutlineRenderer;
 import org.dasd.stemcell.view.ScreensController;
+import org.dasd.stemcell.view.popover.Popover;
+import org.dasd.stemcell.view.popover.Side;
+import org.dasd.stemcell.view.popover.Triangle;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.awt.*;
 import java.util.Set;
 import java.util.TreeSet;
@@ -79,52 +80,41 @@ public class STEMCell extends Application {
 		});
 	}
 
+	public static void toFocus() {
+		ScriptEngineManager mgr = new ScriptEngineManager();
+		ScriptEngine engine = mgr.getEngineByName("AppleScript");
+
+		try {
+			engine.eval("tell me to activate");
+		} catch (ScriptException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public void start(Stage stage) {
 		ScreensController controller = new ScreensController(WIDTH, HEIGHT);
 		controller.loadScreen(HOME_SCREEN);
 		controller.loadScreen(LOGIN_SCREEN);
 
+		Clock clock = new Clock(stage, new OutlineRenderer(new Font("Helvetica", Font.PLAIN, 15)));
+		Popover popover = new Popover<>(controller, new DropShadow(15, Color.GREY), new Triangle(15, Side.TOP, Color.valueOf("#1565C0")));
+
 		ServiceManager serviceManager = new ServiceManager();
 		serviceManager.setDays(new TreeSet<>(TestData.days));
 		Set<TimedService> services = serviceManager.getServices();
 		services.add(controller.getController(HOME_SCREEN));
-		services.add(new Clock(stage, new OutlineRenderer(new Font("Helvetica", Font.PLAIN, 15))));
+		services.add(clock);
 
-		BorderPane wrapper = new BorderPane();
-		double triangleSize = 15;
-		Polygon polygon = generateTriangle(triangleSize, triangleSize, false);
-		BorderPane.setAlignment(polygon, Pos.CENTER);
-		polygon.setFill(Color.valueOf("#1565C0"));
-		wrapper.setCenter(controller);
-		wrapper.setTop(polygon);
-		wrapper.setBackground(null);
-
-
-		controller.setEffect(new DropShadow(5, Color.BLACK));
-		controller.setPadding(new Insets(-10, 0, 0, 0));
-
-		Scene scene = new Scene(wrapper);
+		Scene scene = new Scene(popover);
 		scene.setFill(null);
 		stage.setScene(scene);
-		stage.initStyle(StageStyle.UNDECORATED);
 		stage.initStyle(StageStyle.TRANSPARENT);
-		stage.setWidth(WIDTH + 10);
-		stage.setHeight(HEIGHT + triangleSize + 10);
+		stage.setWidth(WIDTH + 40);
+		stage.setHeight(HEIGHT + 35);
 		stage.setAlwaysOnTop(true);
 
 		controller.setScreen(LOGIN_SCREEN);
 		serviceManager.start();
-	}
-
-	private Polygon generateTriangle(double width, double height, boolean flipped) {
-		Polygon polygon = new Polygon();
-		ObservableList<Double> points = polygon.getPoints();
-		for (double x = -width; x <= width; x++) {
-			points.add(x + width);
-			double y = ((height / 2) * (Math.cos(x * (Math.PI / width)) + 1));
-			points.add(flipped ? y : height - y);
-		}
-		return polygon;
 	}
 }

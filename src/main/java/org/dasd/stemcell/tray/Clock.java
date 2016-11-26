@@ -2,6 +2,8 @@ package org.dasd.stemcell.tray;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import org.dasd.stemcell.STEMCell;
 import org.dasd.stemcell.schedule.Day;
 import org.dasd.stemcell.schedule.Period;
 import org.dasd.stemcell.service.ServiceManager;
@@ -23,6 +25,7 @@ public class Clock implements TimedService {
 	private TrayIcon icon;
 	private BaseRenderer renderer;
 	private String defaultMessage;
+	private Stage stage;
 
 	public Clock(Stage stage, BaseRenderer renderer) {
 		this(stage, renderer, "STEM");
@@ -32,6 +35,8 @@ public class Clock implements TimedService {
 		this.renderer = renderer;
 		this.defaultMessage = defaultMessage;
 		this.icon = new TrayIcon(renderer.drawIcon(defaultMessage));
+		this.stage = stage;
+
 		this.icon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -42,9 +47,19 @@ public class Clock implements TimedService {
 				stage.setY(point.getY());
 				Platform.runLater(() -> {
 					if (stage.isShowing()) stage.hide();
-					else stage.show();
+					else {
+						stage.show();
+					}
 				});
 			}
+		});
+		stage.addEventHandler(WindowEvent.WINDOW_SHOWN, event -> {
+			STEMCell.toFocus();
+			stage.requestFocus();
+			stage.toFront();
+		});
+		stage.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if (!newValue) stage.hide();
 		});
 		try {
 			SystemTray.getSystemTray().add(icon);

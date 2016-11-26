@@ -1,15 +1,17 @@
-package org.dasd.stemcell.view;
+package org.dasd.stemcell.view.popover;
 
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Rotate;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.Optional;
 
 /**
  * This program is free software: you can redistribute it and/or modify
@@ -35,6 +37,7 @@ public class Popover<T extends Pane> extends BorderPane {
 	private Triangle triangle;
 	@Getter
 	private int cornerCurve;
+	private Pane wrapper;
 
 	public Popover(T content, DropShadow shadow, Triangle triangle) {
 		this(content, shadow, triangle, CORNER_CURVE);
@@ -42,22 +45,24 @@ public class Popover<T extends Pane> extends BorderPane {
 
 	public Popover(T content, DropShadow shadow, Triangle triangle, int cornerCurve) {
 		super();
-		setCornerCurve(cornerCurve);
+		setBackground(Background.EMPTY);
 		setContent(content);
+		setCornerCurve(cornerCurve);
 		setShadow(shadow);
 		setTriangle(triangle);
 	}
 
-	public T getContent() {
-		return (T) ((Pane) getCenter()).getChildren().get(0);
+	public Optional<T> getContent() {
+		if (wrapper == null) return Optional.empty();
+		return Optional.of((T) wrapper.getChildren().get(0));
 	}
 
 	public void setContent(T content) {
-		T oldContent = getContent();
-		if (oldContent != null) oldContent.setClip(null);
-		setCenter(new Pane(content));
+		Optional<T> oldContent = getContent();
+		if (oldContent.isPresent()) oldContent.get().setClip(null);
+		wrapper = new Pane(content);
+		setCenter(new Group(wrapper));
 		updateContent();
-
 	}
 
 	public void setCornerCurve(int cornerCurve) {
@@ -80,8 +85,9 @@ public class Popover<T extends Pane> extends BorderPane {
 			points.add(triangle.height - y);
 		}
 
-		polygon.getTransforms().add(triangle.side.getRotate());
+		polygon.getTransforms().add(triangle.getRotate());
 		polygon.setFill(triangle.color);
+		BorderPane.setAlignment(polygon, Pos.CENTER);
 		switch (this.triangle.side) {
 			case TOP:
 				setTop(polygon);
@@ -92,50 +98,25 @@ public class Popover<T extends Pane> extends BorderPane {
 			case BOTTOM:
 				setBottom(polygon);
 				break;
+			// FIXME: 11/25/16
 			case LEFT:
 				setLeft(polygon);
 				break;
 		}
+		if (wrapper != null) BorderPane.setAlignment(wrapper.getParent(), this.triangle.side.alignStrategy);
 	}
 
 	public void setShadow(DropShadow shadow) {
 		getCenter().setEffect(shadow);
 	}
 
-
 	private void updateContent() {
-		T content = getContent();
-		Rectangle clip = new Rectangle(content.getPrefWidth(), content.getPrefHeight());
+		Optional<T> content = getContent();
+		if (!content.isPresent()) return;
+		T item = content.get();
+		Rectangle clip = new Rectangle(item.getPrefWidth(), item.getPrefHeight());
 		clip.setArcWidth(cornerCurve);
 		clip.setArcHeight(cornerCurve);
-		content.setClip(clip);
-	}
-
-	@AllArgsConstructor
-	public enum Side {
-		TOP(0),
-		LEFT(-90),
-		RIGHT(90),
-		BOTTOM(180);
-
-		private int rotation;
-
-		private Rotate getRotate() {
-			return new Rotate(rotation, 0, 0);
-		}
-	}
-
-	@AllArgsConstructor
-	public class Triangle {
-		@Getter
-		private double width, height;
-		@Getter
-		private Side side;
-		@Getter
-		private Color color;
-
-		public Triangle(double size, Side side, Color color) {
-			this(size, size, side, color);
-		}
+		item.setClip(clip);
 	}
 }

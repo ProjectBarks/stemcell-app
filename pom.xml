@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -29,6 +29,10 @@
 		<repository>
 			<id>local</id>
 			<url>file:///${project.basedir}/repo</url>
+		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 
@@ -62,6 +66,16 @@
 			<groupId>com.license4j</groupId>
 			<artifactId>license4j</artifactId>
 			<version>1.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.PlusHaze</groupId>
+			<artifactId>TrayNotification</artifactId>
+			<version>5393c3a54f</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
