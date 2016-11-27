@@ -8,6 +8,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.dasd.stemcell.notification.NotificationService;
 import org.dasd.stemcell.service.ServiceManager;
 import org.dasd.stemcell.service.TimedService;
 import org.dasd.stemcell.tray.Clock;
@@ -97,16 +98,14 @@ public class STEMCell extends Application {
 		controller.loadScreen(HOME_SCREEN);
 		controller.loadScreen(LOGIN_SCREEN);
 
-		Clock clock = new Clock(stage, new OutlineRenderer(new Font("Helvetica", Font.PLAIN, 15)));
-		Popover popover = new Popover<>(controller, new DropShadow(15, Color.GREY), new Triangle(15, Side.TOP, Color.valueOf("#1565C0")));
-
 		ServiceManager serviceManager = new ServiceManager();
 		serviceManager.setDays(new TreeSet<>(TestData.days));
 		Set<TimedService> services = serviceManager.getServices();
 		services.add(controller.getController(HOME_SCREEN));
-		services.add(clock);
+		services.add(new Clock(stage, new OutlineRenderer(new Font("Helvetica", Font.PLAIN, 15))));
+		services.add(new NotificationService());
 
-		Scene scene = new Scene(popover);
+		Scene scene = new Scene(new Popover<>(controller, new DropShadow(15, Color.GREY), new Triangle(15, Side.TOP, Color.valueOf("#1565C0"))));
 		scene.setFill(null);
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.TRANSPARENT);
